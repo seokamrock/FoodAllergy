@@ -158,6 +158,10 @@ function buildWarningSummary(meal: MealInfo, userAllergens: number[]): string {
     : preview;
 }
 
+export function buildNotificationBody(warningSummary: string, mealSummary: string): string {
+  return `알레르기 유의 메뉴: ${warningSummary} | 당일 식단: ${mealSummary}`;
+}
+
 async function sendBatch(
   subscriptions: PushSubscriptionRecord[],
   createPayload: (sub: PushSubscriptionRecord) => {
@@ -286,7 +290,7 @@ export async function sendNotificationToSub(
 
   await sendPush(sub, {
     title,
-    body: `메뉴: ${mealSummary} | 알레르기 주의: ${warningSummary}`,
+    body: buildNotificationBody(warningSummary, mealSummary),
     icon: notificationIcon,
     badge: notificationIcon,
     data: { url: '/' },
@@ -329,7 +333,7 @@ export async function runDailyNotification(date = getTodayDate()): Promise<Notif
       const warningSummary = buildWarningSummary(meal, sub.allergens);
       return {
         title: `오늘 ${meal.mealType} 급식 안내`,
-        body: `메뉴: ${mealSummary} | 알레르기 주의: ${warningSummary}`,
+        body: buildNotificationBody(warningSummary, mealSummary),
         icon: notificationIcon,
         badge: notificationIcon,
         data: { url: '/' },
@@ -377,7 +381,7 @@ export async function runLunchReminder(date = getTodayDate()): Promise<Notificat
     const warningSummary = buildWarningSummary(meal, sub.allergens);
     return {
       title: `점심 전 ${meal.mealType} 급식 안내`,
-      body: `메뉴: ${mealSummary} | 알레르기 주의: ${warningSummary}`,
+      body: buildNotificationBody(warningSummary, mealSummary),
       icon: notificationIcon,
       badge: notificationIcon,
       data: { url: '/' },
