@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { MealInfo, NeisMealRow, ParsedDish } from '../types';
+import { cleanDishName } from '../utils/mealNames';
 
 const BASE_URL = 'https://open.neis.go.kr/hub';
 
@@ -21,9 +22,9 @@ export function parseDishName(ddishNm: string): ParsedDish[] {
 
     const codeMatch = trimmed.match(/\s*\(?(\d+(?:\.\d+)*)\.?\)?\s*$/);
     const codePart = codeMatch?.[1] || '';
-    const namePart = codeMatch
+    const namePart = cleanDishName(codeMatch
       ? trimmed.slice(0, codeMatch.index).trim()
-      : trimmed;
+      : trimmed);
 
     if (!namePart) continue;
 

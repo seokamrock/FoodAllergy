@@ -43,6 +43,10 @@ export interface ParsedDish {
   allergens: number[];
 }
 
+export function cleanDishName(name: string): string {
+  return name.replace(/\s*\(N\)\s*$/i, '').trim();
+}
+
 export function parseDishName(ddishNm: string): ParsedDish[] {
   const dishes: ParsedDish[] = [];
   const items = ddishNm.split(/<br\s*\/?>/gi);
@@ -53,9 +57,9 @@ export function parseDishName(ddishNm: string): ParsedDish[] {
 
     const codeMatch = trimmed.match(/\s*\(?(\d+(?:\.\d+)*)\.?\)?\s*$/);
     const codePart = codeMatch?.[1] || '';
-    const namePart = codeMatch
+    const namePart = cleanDishName(codeMatch
       ? trimmed.slice(0, codeMatch.index).trim()
-      : trimmed;
+      : trimmed);
 
     if (!namePart) continue;
 

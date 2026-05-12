@@ -1,5 +1,6 @@
 import { query } from './client';
 import { MealInfo } from '../types';
+import { cleanMealNames } from '../utils/mealNames';
 
 export async function getCachedMeal(
   regionCode: string,
@@ -16,7 +17,7 @@ export async function getCachedMeal(
   );
 
   if (result.rowCount === 0) return null;
-  return result.rows[0].meals as MealInfo[];
+  return cleanMealNames(result.rows[0].meals as MealInfo[]);
 }
 
 export async function setCachedMeal(
@@ -35,7 +36,7 @@ export async function setCachedMeal(
         meals = EXCLUDED.meals,
         fetched_at = NOW()
     `,
-    [regionCode, schoolCode, date, JSON.stringify(meals)]
+    [regionCode, schoolCode, date, JSON.stringify(cleanMealNames(meals))]
   );
 
   await query(`
